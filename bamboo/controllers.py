@@ -14,8 +14,7 @@ from bamboo.exceptions import (
     CONFLICT_ERRORS,
     FieldNotFoundError,
     NoIDError,
-    NoUserError,
-    StatusCodeError,
+    NoUserError
 )
 from bamboo.thirdparty import get_facebook_user
 
