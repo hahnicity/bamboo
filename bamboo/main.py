@@ -2,10 +2,12 @@
 bamboo.main
 ~~~~~~~~~~
 """
+""""
 from argparse import ArgumentParser
 from os import environ
-
+"""
 from bamboo.app import create_app
+"""
 from bamboo.configure import configure_app
 from bamboo.connection import make_engine
 from bamboo.context import bamboo_context
@@ -46,13 +48,18 @@ def add_other_arguments(parser):
         action="store_true",
     )
 
-
+"""
 def main():
     """
     Console Entry point
     """
-    args = build_parser().parse_args()
+    #args = build_parser().parse_args()
     app = create_app()
-    with bamboo_context(engine=make_engine()):
-        configure_app(app, args)
-        app.run(host=app.config["HOST"], port=environ.get("PORT", 5000))
+    app.run()
+    @app.route("/")
+    def stuff():
+        return "Hello World"
+
+    #with bamboo_context(engine=make_engine()):
+    #    configure_app(app, args)
+    #    app.run(host=app.config["HOST"], port=environ.get("PORT", 5000))
