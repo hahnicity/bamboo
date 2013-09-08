@@ -5,7 +5,7 @@ bamboo.app
 from flask import Flask
 
 
-def create_app():
+def make_app():
     """
     Factory function for creating an app
     """

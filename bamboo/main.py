@@ -5,8 +5,8 @@ bamboo.main
 from argparse import ArgumentParser
 from os import environ
 
-from bamboo.app import create_app
-from bamboo.connection import initialize_db, make_db
+from bamboo.app import make_app
+from bamboo.db import make_db
 from bamboo.context import bamboo_context
 
 
@@ -46,22 +46,17 @@ def add_other_arguments(parser):
     )
 
 
-#def debug_controllers(app):
-#    @app.route("/login")
-#    def stuff():
-#        return "Hello World"
-
-
 def main():
     """
     Console Entry point
     """
-    app = create_app()
+    app = make_app()
     with bamboo_context(db=make_db(app)):
         from bamboo.configure import configure_app
+        from bamboo.connection import make_schema
         args = build_parser().parse_args()
         configure_app(app, args)
-        initialize_db()
+        make_schema()
         app.run(host=app.config["HOST"], port=int(environ.get("PORT", 5000)))
 
 

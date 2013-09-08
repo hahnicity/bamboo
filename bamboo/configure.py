@@ -17,14 +17,21 @@ def configure_app(app, args):
     app.testing = args.testing
     app.config["HOST"] = get_host(args)
 
-    # Configure DB for Heroku
-    Heroku(app)
-    # XXX HACK. Because flask-heroku sucks in debug env
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+    # Configure DB for Heroku/Testing
+    configure_database(app)
 
     # Create all application controllers
     create_routes(app)
 
+
+def configure_database(app):
+    """
+    Configure our database client when we are testing locally
+    """
+    if app.testing:
+        app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+    else:
+        Heroku(app)
 
 def get_host(args):
     """

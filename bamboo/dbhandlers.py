@@ -4,7 +4,7 @@ bamboo.dbhandlers
 """
 from sqlalchemy.orm.exc import NoResultFound
 
-from bamboo.connection import execute_session
+from bamboo.connection import execute_session, add_and_commit
 from bamboo.schema import Customer, Dues, Payments
 from bamboo.thirdparty import get_facebook_user_id, get_facebook_name
 
@@ -19,11 +19,9 @@ def handle_login(user):
                 session, get_facebook_user_id(user)
             )
         except NoResultFound:
-            session.add(Customer(
+            add_and_commit(session, Customer(
                 session, get_facebook_name(user), get_facebook_user_id(user)
             ))
-            # XXX HACK
-            session.commit()
             return Customer.get_user_id_by_facebook_id(
                 session, get_facebook_user_id(user)
             )
@@ -36,8 +34,8 @@ def handle_new_due(form):
     with execute_session() as session:
         session.add(Dues(
             session,
-            form["id"],  # XXX Customer ID
-            form["friend_id"],  # XXX Friend id
+            form["id"],  # Customer ID
+            form["friend_id"],
             form["amount"],
             form["note"]
         ))

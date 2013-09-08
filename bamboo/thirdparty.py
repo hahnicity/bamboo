@@ -33,3 +33,6 @@ def get_facebook_name(data):
     Get the facebook user information
     """
     return data["name"]
+
+
+# XXX VenMo stuff TBD

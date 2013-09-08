@@ -3,6 +3,7 @@ bamboo.schema.customer
 ~~~~~~~~~~~~~~~~~~~~~~
 """
 from bamboo.globals import db
+from bamboo.schema.base import get_last_id
 
 
 class Customer(db.Model):
@@ -33,7 +34,4 @@ class Customer(db.Model):
         """
         Get the number of rows in the customer table
         """
-        if session.query(cls).count() == 0:
-            return 0
-        else:
-            return session.query(cls).order_by("-id").first().id
+        return get_last_id(cls, session)

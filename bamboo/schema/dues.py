@@ -5,6 +5,7 @@ bamboo.schema.dues
 from itertools import groupby
 
 from bamboo.globals import db
+from bamboo.schema.base import get_last_id
 
 
 class Dues(db.Model):
@@ -38,10 +39,7 @@ class Dues(db.Model):
         """
         Get the number of entries in this table
         """
-        if session.query(cls).count() == 0:
-            return 0
-        else:
-            return session.query(cls).order_by("-id").first().id
+        return get_last_id(cls, session)
 
     @classmethod
     def get_all_dues_for_customer(cls, session, user_id):
@@ -66,7 +64,7 @@ class Dues(db.Model):
             "due_id": due.user_id,
             "amount": due.amount,
             "note": due.note
-            } for due in dues]
+        } for due in dues]
 
     @classmethod
     def get_sum_dues_for_customer_by_friend(cls, session, user_id, friend_id):
@@ -86,8 +84,7 @@ class Dues(db.Model):
         grouped_dues = groupby(sorted_dues, key=lambda due: due.friend_id)
 
         return {
-            user_id: cls.sum_dues(dues)
-            for user_id, dues in grouped_dues
+            user_id: cls.sum_dues(dues) for user_id, dues in grouped_dues
         }
 
     @classmethod

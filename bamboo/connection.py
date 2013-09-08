@@ -4,23 +4,15 @@ bamboo.connection
 """
 from contextlib import contextmanager
 
-from flask.ext.sqlalchemy import SQLAlchemy
+from bamboo.globals import db
 
 
-def initialize_db():
+def add_and_commit(session, item):
     """
-    Initialize our database
+    Add an item to the DB and then commit it
     """
-    from bamboo.globals import db
-    from bamboo.schema import Customer, Dues, Payments
-    db.create_all()
-
-
-def make_db(app):
-    """
-    Return our database engine
-    """
-    return SQLAlchemy(app)
+    session.add(item)
+    session.commit()
 
 
 @contextmanager
@@ -28,7 +20,6 @@ def execute_session():
     """
     Execute some kind of action with a session object
     """
-    from bamboo.globals import db
     try:
         yield db.session
     except:
@@ -36,3 +27,10 @@ def execute_session():
         raise
     else:
         db.session.commit()
+
+
+def make_schema():
+    """
+    Initialize our database
+    """
+    db.create_all()

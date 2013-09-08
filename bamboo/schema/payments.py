@@ -3,6 +3,7 @@ bamboo.schema.payments
 ~~~~~~~~~~~~~~~~~~~~~~
 """
 from bamboo.globals import db
+from bamboo.schema.base import get_last_id
 
 
 class Payments(db.Model):
@@ -24,7 +25,4 @@ class Payments(db.Model):
         """
         Get the id of the last payment made
         """
-        if session.query(cls).count() == 0:
-            return 0
-        else:
-            return session.query(cls).order_by("-id").first().id
+        return get_last_id(cls, session)
