@@ -4,6 +4,18 @@ bamboo.exceptions
 """
 
 
+class FieldNotFoundError(Exception):
+    def __init__(self, field):
+        super(FieldNotFoundError, self).__init__(
+            "The field {} was not found in your post!".format(field)
+        )
+
+
+class NoIDError(Exception):
+    def __init__(self):
+        super(NoIDError, self).__init__("No ID was specified")
+
+
 class NoUserError(Exception):
     def __init__(self):
         super(NoUserError, self).__init__("No user was specified!")

@@ -20,6 +20,10 @@ class Customer(Base):
         self.name = name
 
     @classmethod
+    def get_name_by_id(cls, session, id):
+        return session.query(cls).filter(cls.id==id).one().name
+
+    @classmethod
     def get_user_id_by_facebook_id(cls, session, facebook_id):
         """
         Get a user id by their facebook id
