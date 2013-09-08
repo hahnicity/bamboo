@@ -13,7 +13,7 @@ class Customer(db.Model):
     name = db.Column(db.String)
 
     def __init__(self, session, name, facebook_id):
-        self.id = self.get_number_users(session) + 1
+        self.id = self.get_last_user_id(session) + 1
         self.facebook_id = facebook_id
         self.name = name
 
@@ -29,8 +29,11 @@ class Customer(db.Model):
         return session.query(cls).filter(cls.facebook_id==facebook_id).one().id
 
     @classmethod
-    def get_number_users(cls, session):
+    def get_last_user_id(cls, session):
         """
         Get the number of rows in the customer table
         """
-        return session.query(cls).count()
+        if session.query(cls).count() == 0:
+            return 0
+        else:
+            return session.query(cls).order_by("-id").first().id

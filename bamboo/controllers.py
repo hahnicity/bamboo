@@ -5,12 +5,21 @@ bamboo.controllers
 from flask import request
 from ujson import dumps
 
-from bamboo.dbhandlers import handle_login, handle_new_due, handle_view_dues
-from bamboo.constants import DUE_FIELDS
-from bamboo.exceptions import (
-    FieldNotFoundError, NoIDError, NoUserError, StatusCodeError
+from bamboo.dbhandlers import (
+    handle_login,
+    handle_new_due,
+    handle_pay_in_full,
+    handle_view_dues,
+    handle_view_dues_by_friend
 )
-from bamboo.oauth import get_user
+from bamboo.constants import DUE_FIELDS, PAYMENT_FIELDS
+from bamboo.exceptions import (
+    FieldNotFoundError,
+    NoIDError,
+    NoUserError,
+    StatusCodeError
+)
+from bamboo.thirdparty import get_facebook_user
 
 
 def create_routes(app):
@@ -21,40 +30,68 @@ def create_routes(app):
         """
         try:
             username = _get_username()
-            id = handle_login(get_user(username))
+            id = handle_login(get_facebook_user(username))
         except Exception as error:
-            return dumps({"response": error.message})
+            return dumps({"response": error.message}), 400
         else:
             return dumps({"response": {"id": id}})
+
+    @app.route("/viewbyfriend", methods=["GET"])
+    def view_dues_by_friend():
+        """
+        View all dues owed to/by a friend to a customer
+        """
+        try:
+            id = _get_id("id")
+            friend_id = _get_id("friend_id")
+            separate_dues = handle_view_dues_by_friend(id, friend_id)
+        except Exception as error:
+            return dumps({"response": error.message}), 400
+        else:
+            return dumps({"response": separate_dues})
 
     @app.route("/view", methods=["GET"])
     def view_dues():
         """
-        Create a payment for a user
+        View all dues owed to/from customer
         """
         try:
-            id = _get_id()
+            id = _get_id("id")
             dues_by_customer = handle_view_dues(id)
         except Exception as error:
-            return dumps({"response": error.message})
+            return dumps({"response": error.message}), 400
         else:
             return dumps({"response": dumps(dues_by_customer)})
 
     @app.route("/due", methods=["POST"])
     def new_due():
         """
-        Create a new payment
+        Create a new due
         """
         try:
             _validate_due_fields()
             handle_new_due(request.form)
         except Exception as error:
-            return dumps({"response": error.message})
+            return dumps({"response": error.message}), 400
         else:
             return dumps({"response": "success"})
 
-    def  _get_id():
-        id = request.args.get("id")
+    @app.route("/payinfull", methods=["POST"])
+    def pay_in_full():
+        """
+        Pay a friend in full
+        """
+        try:
+            _validate_payment_fields()
+            handle_pay_in_full(request.form)
+        except Exception as error:
+            return dumps({"response": error.message}), 400
+        else:
+            return dumps({"response": "success"})
+
+
+    def  _get_id(key):
+        id = request.args.get(key)
         if not id:
             raise NoIDError()
         else:
@@ -69,5 +106,10 @@ def create_routes(app):
 
     def _validate_due_fields():
         for field in DUE_FIELDS:
+            if field not in request.form:
+                raise FieldNotFoundError(field)
+
+    def _validate_payment_fields():
+        for field in PAYMENT_FIELDS:
             if field not in request.form:
                 raise FieldNotFoundError(field)

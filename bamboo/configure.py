@@ -19,7 +19,7 @@ def configure_app(app, args):
 
     # Configure DB for Heroku
     Heroku(app)
-    # XXX HACK. Because flask-heroku isnt doing its job
+    # XXX HACK. Because flask-heroku sucks in debug env
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 
     # Create all application controllers

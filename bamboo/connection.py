@@ -12,7 +12,7 @@ def initialize_db():
     Initialize our database
     """
     from bamboo.globals import db
-    from bamboo.schema import Customer, Dues
+    from bamboo.schema import Customer, Dues, Payments
     db.create_all()
 
 
