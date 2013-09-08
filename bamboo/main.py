@@ -4,8 +4,9 @@ bamboo.main
 """
 """"
 from argparse import ArgumentParser
-from os import environ
 """
+from os import environ
+
 from bamboo.app import create_app
 """
 from bamboo.configure import configure_app
@@ -62,7 +63,7 @@ def main():
     #args = build_parser().parse_args()
     app = create_app()
     debug_controllers(app)
-    app.run()
+    app.run(host="0.0.0.0", port=int(environ.get("PORT", 5000)))
 
     #with bamboo_context(engine=make_engine()):
     #    configure_app(app, args)
