@@ -68,3 +68,8 @@ def main():
     #with bamboo_context(engine=make_engine()):
     #    configure_app(app, args)
     #    app.run(host=app.config["HOST"], port=environ.get("PORT", 5000))
+    #
+
+
+if __name__ == "__main__":
+    main()
