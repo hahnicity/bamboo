@@ -1,1 +1,1 @@
-web: python bamboo/main.py --debug
+web: python bamboo/main.py
