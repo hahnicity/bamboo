@@ -1,0 +1,1 @@
+web: bamboo --debug
