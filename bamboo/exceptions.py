@@ -30,3 +30,7 @@ class StatusCodeError(Exception):
             )
         )
         super(StatusCodeError, self).__init__(msg)
+
+
+BAD_REQUEST_ERRORS = (FieldNotFoundError, NoIDError, NoUserError)
+CONFLICT_ERRORS = (StatusCodeError,)
