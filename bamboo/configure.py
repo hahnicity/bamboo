@@ -2,6 +2,8 @@
 bamboo.configure
 ~~~~~~~~~~~~~~~
 """
+import os
+
 from flask.ext.heroku import Heroku
 
 from bamboo.controllers import create_routes
@@ -14,10 +16,11 @@ def configure_app(app, args):
     app.debug = args.debug
     app.testing = args.testing
     app.config["HOST"] = get_host(args)
-    app.config["SQLALCHEMY_DATABASE_URI"] = args.db_uri
 
     # Configure DB for Heroku
     Heroku(app)
+    # XXX HACK. Because flask-heroku isnt doing its job
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 
     # Create all application controllers
     create_routes(app)

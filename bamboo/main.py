@@ -35,11 +35,6 @@ def add_other_arguments(parser):
     """
     others = parser.add_argument_group("Other Options")
     others.add_argument(
-        "--db-uri",
-        help="The URI for the DB",
-        default=environ.get("SQLALCHEMY_DATABASE_URI")
-    )
-    others.add_argument(
         "--debug",
         help="Enable exception logging and reload the app if the source changes",
         action="store_true",
