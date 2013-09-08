@@ -15,7 +15,7 @@ from bamboo.context import bamboo_context
 
 def build_parser():
     """
-    Parse all command line arguments
+    #Parse all command line arguments
     """
     parser = ArgumentParser()
     add_app_arguments(parser)
@@ -25,7 +25,7 @@ def build_parser():
 
 def add_app_arguments(parser):
     """
-    Add arguments for where the app will be run
+    #Add arguments for where the app will be run
     """
     hosts = parser.add_mutually_exclusive_group()
     hosts.add_argument("--local", help="Launch the app on 127.0.0.1", action="store_true")
@@ -34,7 +34,7 @@ def add_app_arguments(parser):
 
 def add_other_arguments(parser):
     """
-    Add other arguments
+    #Add other arguments
     """
     others = parser.add_argument_group("Other Options")
     others.add_argument(
@@ -48,17 +48,21 @@ def add_other_arguments(parser):
         action="store_true",
     )
 
-"""
+""""
+def debug_controllers(app):
+    @app.route("/login")
+    def stuff():
+        return "Hello World"
+
+
 def main():
     """
     Console Entry point
     """
     #args = build_parser().parse_args()
     app = create_app()
+    debug_controllers(app)
     app.run()
-    @app.route("/")
-    def stuff():
-        return "Hello World"
 
     #with bamboo_context(engine=make_engine()):
     #    configure_app(app, args)
