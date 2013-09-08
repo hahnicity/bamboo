@@ -4,33 +4,23 @@ bamboo.connection
 """
 from contextlib import contextmanager
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
-from bamboo.defaults import db
-from bamboo.globals import engine
+from flask.ext.sqlalchemy import SQLAlchemy
 
 
-def make_engine(**kwargs):
+def initialize_db():
+    """
+    Initialize our database
+    """
+    from bamboo.globals import db
+    from bamboo.schema import Customer, Dues
+    db.create_all()
+
+
+def make_db(app):
     """
     Return our database engine
     """
-    db.update(kwargs)
-    return create_engine("{}://{}:{}@{}/{}".format(
-        db["engine"],
-        db["user"],
-        db["password"],
-        db["hostname"],
-        db["database"])
-    )
-
-
-def make_session():
-    """
-    Create a database session
-    """
-    Session = sessionmaker(bind=engine)
-    return Session()
+    return SQLAlchemy(app)
 
 
 @contextmanager
@@ -38,13 +28,11 @@ def execute_session():
     """
     Execute some kind of action with a session object
     """
+    from bamboo.globals import db
     try:
-        session = make_session()
-        yield session
+        yield db.session
     except:
-        session.rollback()
+        db.session.rollback()
         raise
     else:
-        session.commit()
-    finally:
-        session.close()
+        db.session.commit()

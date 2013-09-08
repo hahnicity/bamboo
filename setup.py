@@ -19,6 +19,8 @@ setup(
     },
     install_requires=[
         "flask",
+        "flask-heroku",
+        "flask-sqlalchemy",
         "ProxyTypes>=0.9,<1.0",
         "psycopg2",
         "requests",

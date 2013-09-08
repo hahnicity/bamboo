@@ -4,19 +4,17 @@ bamboo.schema.dues
 """
 from itertools import groupby
 
-from sqlalchemy import Column, Float, Integer, String
-
-from bamboo.schema import Base
+from bamboo.globals import db
 
 
-class Dues(Base):
+class Dues(db.Model):
     __tablename__ = "dues"
 
-    id = Column(Integer, primary_key=True)
-    customer_id = Column(Integer)  # XXX Add FK
-    customer_owed = Column(Integer)
-    amount = Column(Float)
-    note = Column(String)
+    id = db.Column(db.Integer, primary_key=True)
+    customer_id = db.Column(db.Integer)  # XXX Add FK
+    customer_owed = db.Column(db.Integer)
+    amount = db.Column(db.Float)
+    note = db.Column(db.String)
 
     def __init__(self, session, customer_id, customer_owed, amount, note):
         self.id = self.get_number_of_dues(session) + 1

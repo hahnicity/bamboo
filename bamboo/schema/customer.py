@@ -2,17 +2,15 @@
 bamboo.schema.customer
 ~~~~~~~~~~~~~~~~~~~~~~
 """
-from sqlalchemy import Column, Integer, String
-
-from bamboo.schema import Base
+from bamboo.globals import db
 
 
-class Customer(Base):
+class Customer(db.Model):
     __tablename__ = "customer"
 
-    id = Column(Integer, primary_key=True)
-    facebook_id = Column(Integer)
-    name = Column(String)
+    id = db.Column(db.Integer, primary_key=True)
+    facebook_id = db.Column(db.Integer)
+    name = db.Column(db.String)
 
     def __init__(self, session, name, facebook_id):
         self.id = self.get_number_users(session) + 1

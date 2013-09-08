@@ -6,8 +6,7 @@ from argparse import ArgumentParser
 from os import environ
 
 from bamboo.app import create_app
-from bamboo.configure import configure_app
-from bamboo.connection import make_engine
+from bamboo.connection import initialize_db, make_db
 from bamboo.context import bamboo_context
 
 
@@ -36,6 +35,11 @@ def add_other_arguments(parser):
     """
     others = parser.add_argument_group("Other Options")
     others.add_argument(
+        "--db-uri",
+        help="The URI for the DB",
+        default=environ.get("SQLALCHEMY_DATABASE_URI")
+    )
+    others.add_argument(
         "--debug",
         help="Enable exception logging and reload the app if the source changes",
         action="store_true",
@@ -57,10 +61,12 @@ def main():
     """
     Console Entry point
     """
-    with bamboo_context(engine=make_engine()):
+    app = create_app()
+    with bamboo_context(db=make_db(app)):
+        from bamboo.configure import configure_app
         args = build_parser().parse_args()
-        app = create_app()
         configure_app(app, args)
+        initialize_db()
         app.run(host=app.config["HOST"], port=int(environ.get("PORT", 5000)))
 
 
