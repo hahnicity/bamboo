@@ -33,3 +33,10 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# Annoying files
+*.swp
+*.swo
+
+# VirtualEnvs
+venv
